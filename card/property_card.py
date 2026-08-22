@@ -2,7 +2,6 @@ from .card import Card
 
 class PropertyCard(Card):
     def __init__(self, **kwargs):
-        print(kwargs)
         super().__init__(kwargs["Name"], "☐")
         self.info = kwargs
 

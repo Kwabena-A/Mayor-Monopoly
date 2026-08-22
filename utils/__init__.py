@@ -1,0 +1,1 @@
+from .init_property_cards import board_spaces
