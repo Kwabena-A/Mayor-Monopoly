@@ -11,7 +11,7 @@ class Player:
 
     def update_location(self, move: int = 0):
         self.location += move
-
+        self.location = self.location % len(self.board_spaces)
         for space in self.board_spaces:
             if space.location == self.location:
                 if self not in space.currentlyOn:
