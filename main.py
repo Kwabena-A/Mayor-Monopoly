@@ -1,8 +1,9 @@
 from card import PropertyCard, ActionCard, Space
-from utils import board_spaces, display_board
 from player import Player
+from utils import board_spaces, display_board
 from time import sleep
 from random import randint
+
 players = [Player("KB", board_spaces), Player("Major", board_spaces)]
 
 def main():

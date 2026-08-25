@@ -6,8 +6,23 @@ class PropertyCard(Card):
         self.info = kwargs
 
 
-    def land_on(self): # Dosent account for own player yet.
-        if super().ownership == False:
-            print("You can buy this property")
+    def land_on(self, player):
+        from player import Player
+
+        print(player.all_info())
+
+        if self.ownership:
+            print(f'{player.money} -> {player.money - self.info["Rent"]}')
+            player.money -= self.info["Rent"]
         else:
-            print("You must pay rent")
+            purchase_decision = input(f"{player}... Buy {self.name} for {self.info["Price"]}? (Y/N): ")
+            if purchase_decision.lower() == "y":
+                print(f'{player.money} -> {player.money - self.info["Price"]}')
+                player.money -= self.info["Price"]
+
+                self.ownership = player
+                player.ownership.append(self)
+
+    def __str__(self):
+        return f"{self.name}, {self.info["Color"]}"
+
