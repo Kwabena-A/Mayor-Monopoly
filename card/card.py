@@ -11,3 +11,6 @@ class Card(ABC):
     def land_on(self, player: Player):
         pass
 
+    def pass_on(self, player: Player):
+        print(f"{player.name} passed on me ({self.name})")
+

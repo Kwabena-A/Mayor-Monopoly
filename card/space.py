@@ -4,7 +4,6 @@ class Space:
     def __init__(self, location: int, card: Card):
         self.location = location
         self.currentlyOn = []
-        self.passingOn = []
 
         self.card = card
 
