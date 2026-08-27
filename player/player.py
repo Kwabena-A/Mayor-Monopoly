@@ -12,7 +12,17 @@ class Player:
         self.update_location()
         self.status = "Active"
 
-    def update_location(self, move: int = 0, skip_over = False):
+    def update_location(self, move: int = 0, skip_over = False, move_to: str = ""):
+        if move_to != "":
+            for space in self.board_spaces:
+                if move_to in space.card.name:
+                    if space.location > self.location:
+                        move = space.location - self.location
+                    else:
+                        move = (self.location
+                                + (len(self.board_spaces) - self.location)
+                                + space.location)
+
         if skip_over:
             self.location = move
         else:
@@ -42,7 +52,7 @@ class Player:
 
 
     def update_money(self, amount: int):
-        print(f'{self.money} -> {self.money - amount}')
+        print(f'{self.money} -> {self.money + amount}')
         self.money += amount
 
     def all_info(self) -> str:
