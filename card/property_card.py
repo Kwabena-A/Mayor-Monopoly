@@ -12,13 +12,11 @@ class PropertyCard(Card):
         print(player.all_info())
 
         if self.ownership:
-            print(f'{player.money} -> {player.money - self.info["Rent"]}')
-            player.sub_money(self.info["Rent"])
+            player.update_money(self.info["Rent"] * -1)
         else:
             purchase_decision = input(f"{player}... Buy {self.name} for {self.info["Price"]}? (Y/N): ")
             if purchase_decision.lower() == "y":
-                print(f'{player.money} -> {player.money - self.info["Price"]}')
-                player.sub_money(self.info["Price"])
+                player.update_money(self.info["Price"] * -1)
 
                 self.ownership = player
                 player.ownership.append(self)
