@@ -1,5 +1,5 @@
 import card
-
+from utils import count_color
 
 class Player:
     def __init__(self, name: str, board_spaces):
@@ -49,8 +49,6 @@ class Player:
         self.board_spaces[self.location].card.land_on(self)
 
 
-
-
     def update_money(self, amount: int):
         print(f'{self.money} -> {self.money + amount}')
         self.money += amount
@@ -62,6 +60,26 @@ class Player:
         | Location: {self.location}
         | Ownership:\n{"\n".join([f"\t\t\t+ {x}" for x in self.ownership] )}
         """
+
+    def upgrade_property(self, property):
+        assert isinstance(property, card.PropertyCard), "Passed non-property"
+        isUpgraded = False
+        if property.ownership == self: # Confirm Ownership
+            owned_color_count = 0
+            for owned_property in self.ownership: # Count owned same colors
+                if isinstance(owned_property, card.PropertyCard) and owned_property.info["Color"] == property.info["Color"]:
+                    owned_color_count += 1
+            if owned_color_count == count_color(property.info["Color"]): # Confirm full
+                if self.money > property.info["PriceBuild"]:
+                    self.update_money(property.info["PriceBuild"] * -1)
+                    isUpgraded = property.upgrade_property()
+
+        if isUpgraded:
+            print(f"{self.name} upgraded {property}")
+        else:
+            print(f"{self.name} FAILED to upgrade {property}")
+
+
 
     def __str__(self):
         return self.name
