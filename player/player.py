@@ -79,6 +79,19 @@ class Player:
         else:
             print(f"{self.name} FAILED to upgrade {property}")
 
+    def downgrade_property(self, property):
+        assert isinstance(property, card.PropertyCard), "Passed non-property"
+        isDowngraded = False
+        if property.ownership == self: # Confirm Ownership
+            if property.downgrade_property():
+                self.update_money(property.info["PriceBuild"]) # Return Money
+                isDowngraded = True
+
+        if isDowngraded:
+            print(f"{self.name} downgraded {property}")
+        else:
+            print(f"{self.name} FAILED to downgrade {property}")
+
 
 
     def __str__(self):

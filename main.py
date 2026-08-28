@@ -21,6 +21,10 @@ def main():
             print(*[f"{current_player.ownership.index(x)}. {x}\n" for x in current_player.ownership])
             property_indx = int(input("Select a property: "))
             current_player.upgrade_property(current_player.ownership[property_indx])
+        if movement == -3: # Downgrade Property.
+            print(*[f"{current_player.ownership.index(x)}. {x}\n" for x in current_player.ownership])
+            property_indx = int(input("Select a property: "))
+            current_player.downgrade_property(current_player.ownership[property_indx])
 
         if movement >= 0:
             current_player.update_location(movement)
