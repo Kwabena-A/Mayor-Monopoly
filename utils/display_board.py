@@ -10,6 +10,8 @@ def display_board(board, players):
     assert all(isinstance(x, Player) for x in players)
     players: list[Player]
 
+    print(*players)
+
 
     board_symbols = ""
     player_symbols = [[f" " for x in range(len(board))] for x in range(len(players))]

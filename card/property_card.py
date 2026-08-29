@@ -1,4 +1,6 @@
 from .card import Card
+from utils import count_color
+
 
 class PropertyCard(Card):
     def __init__(self, **kwargs):
@@ -22,6 +24,28 @@ class PropertyCard(Card):
 
                 self.ownership = player
                 player.ownership.append(self)
+                self.update_rent(player)
+
+    def update_rent(self, player):
+        if self.house_count > 0:
+            self.info["Rent"] = self.info[f"RentBuild{self.house_count}"]
+            return
+
+        # All color combo check
+
+        owned_color_count = 0
+        for property in [x for x in player.ownership if isinstance(x, PropertyCard)]:
+            if property.info["Color"] == self.info["Color"]:
+                owned_color_count += 1
+
+        if owned_color_count == count_color(self.info["Color"]):
+            self.info["Rent"] = self.info[f"RentBuild0"] * 2
+            return
+
+        self.info["Rent"] = self.info[f"RentBuild{self.house_count}"]
+
+
+
 
     def upgrade_property(self) -> bool:
         if self.house_count < 5:
@@ -42,5 +66,5 @@ class PropertyCard(Card):
         return False
 
     def __str__(self):
-        return f"{self.name}, {self.info["Color"]}"
+        return f"{self.name} [{self.info["Color"]}] [{self.info["Rent"]}]"
 

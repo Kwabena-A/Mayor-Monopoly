@@ -5,7 +5,10 @@ from utils import display_board
 from time import sleep
 from dice import Dice
 
-players = [Player("KB", board_spaces), Player("Major", board_spaces)]
+player1 = Player("KB", board_spaces)
+player2 = Player("Major", board_spaces)
+
+players = [player1, player2]
 dice = Dice(2)
 
 def main():
@@ -30,6 +33,7 @@ def main():
             current_player.update_location(movement)
             if not matching:
                 turn = turn + 1 if turn + 1 < len(players) else 0
+                print(turn)
         sleep(1.5)
 
 if __name__ == "__main__":
