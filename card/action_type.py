@@ -27,7 +27,10 @@ class ActionType():
                 player.update_money(self.net * (len(players) - 2)) # Extra from uncollected
 
         if self.move_to != "":
-            player.update_location(move_to=self.move_to)
+            if "Jail" in self.move_to:
+                player.update_location(move_to=self.move_to, skip_over=True)
+            else:
+                player.update_location(move_to=self.move_to, skip_over=False)
 
         if self.set_status:
             player.status = self.set_status

@@ -11,17 +11,20 @@ class Player:
         self.money = 1200
         self.update_location()
         self.status = "Active"
+        self.jail_rolls = 0
 
     def update_location(self, move: int = 0, skip_over = False, move_to: str = ""):
         if move_to != "":
             for space in self.board_spaces:
-                if move_to in space.card.name:
+                print(space.card.name, " ", move_to)
+                if move_to in space.card.name and "Go to " not in space.card.name :
                     if space.location > self.location:
                         move = space.location - self.location
                     else:
                         move = (self.location
                                 + (len(self.board_spaces) - self.location)
                                 + space.location)
+                    break
 
         if skip_over:
             self.location = move
@@ -47,7 +50,6 @@ class Player:
                     space.currentlyOn.remove(self)
 
         self.board_spaces[self.location].card.land_on(self)
-
 
     def update_money(self, amount: int):
         print(f'{self.money} -> {self.money + amount}')
@@ -92,7 +94,10 @@ class Player:
         else:
             print(f"{self.name} FAILED to downgrade {property}")
 
-
+    def leave_jail(self):
+        self.update_money(-50)
+        self.status = "Active"
+        self.jail_rolls = 0
 
     def __str__(self):
         return self.name

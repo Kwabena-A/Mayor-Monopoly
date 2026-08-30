@@ -12,7 +12,7 @@ df_chance = df[df["type"] == "Chance"]
 df_community = df[df["type"] == "Community Chest"].reset_index()
 
 
-def init_list(active_df: pd.DataFrame) -> list:
+def init_list(active_df: pd.DataFrame) -> list[ActionType]:
     output = []
     for x in range(active_df.shape[0]):
         net = active_df.loc[x, "effect"]
@@ -24,17 +24,18 @@ def init_list(active_df: pd.DataFrame) -> list:
                 move_to = statement[len("Advance to nearest "):]
             else:
                 move_to = statement[len("Advance to "):]
-            if "Jail" in move_to:
-                move_to = "Jail"
             if move_to[-1] == ".":
                 move_to = move_to[:-1]
         set_status = ""
 
         if "Jail" in str(active_df.loc[x, "name"]) != -1:
             set_status = "in jail"
+            move_to = "Jail"
 
         output.append(ActionType(net, shared, move_to, set_status))
     return output
 
 chances = init_list(df_chance)
 community = init_list(df_community)
+
+print(*chances)
