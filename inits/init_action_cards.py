@@ -28,11 +28,15 @@ def init_list(active_df: pd.DataFrame) -> list[ActionType]:
                 move_to = move_to[:-1]
         set_status = ""
 
-        if "Jail" in str(active_df.loc[x, "name"]) != -1:
+        if "Jail" in str(active_df.loc[x, "name"]):
             set_status = "in jail"
             move_to = "Jail"
+        if "Get out of Jail Free" in str(active_df.loc[x, "name"]):
+            set_status = "Active"
 
-        output.append(ActionType(net, shared, move_to, set_status))
+        ownable = df.loc[x, "category"] == "item"
+
+        output.append(ActionType(net, shared, move_to, set_status, ownable))
     return output
 
 chances = init_list(df_chance)

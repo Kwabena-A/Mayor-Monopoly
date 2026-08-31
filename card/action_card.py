@@ -17,5 +17,10 @@ class ActionCard(Card):
         if isinstance(self.action_type, ActionType):
             self.action_type.drawn(player)
         elif isinstance(self.action_type, list):
-            choice(self.action_type).drawn(player)
+            while True:
+                randomCard = choice(self.action_type)
+                randomCard: ActionType
+                if not randomCard.owned:
+                    randomCard.drawn(player)
+                    break
 

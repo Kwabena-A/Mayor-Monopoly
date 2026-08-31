@@ -11,8 +11,11 @@ player2 = Player("Major", board_spaces)
 players = [player1, player2]
 dice = Dice(2)
 
-player1.status = "in Jail"
-player1.update_location(move_to="Jail", skip_over=True)
+from card import ActionType
+ActionCard("Test", ActionType(0, set_status="Get out of Jail Free", ownable=True)).land_on(player1)
+
+ActionCard("Test", ActionType(0, set_status="Jail", move_to="Jail")).land_on(player1)
+
 print(*board_spaces)
 def main():
     turn = 0
@@ -23,10 +26,14 @@ def main():
         matching = False
         if movement == -1: # Random Roll.
             movement, matching = dice.roll()
-        if movement == -2: # Upgrade Property.
+        if movement == -2: # Upgrade Property/Use Card
             print(*[f"{current_player.ownership.index(x)}. {x}\n" for x in current_player.ownership])
             property_indx = int(input("Select a property: "))
-            current_player.upgrade_property(current_player.ownership[property_indx])
+            if isinstance(current_player.ownership[property_indx], PropertyCard):
+                current_player.upgrade_property(current_player.ownership[property_indx])
+            elif isinstance(current_player.ownership[property_indx], ActionType):
+                current_player.ownership[property_indx]: ActionType
+                current_player.ownership[property_indx].used(current_player)
         if movement == -3: # Downgrade Property.
             print(*[f"{current_player.ownership.index(x)}. {x}\n" for x in current_player.ownership])
             property_indx = int(input("Select a property: "))
