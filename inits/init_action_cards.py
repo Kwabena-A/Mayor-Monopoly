@@ -15,31 +15,54 @@ df_community = df[df["type"] == "Community Chest"].reset_index()
 def init_list(active_df: pd.DataFrame) -> list[ActionType]:
     output = []
     for x in range(active_df.shape[0]):
+        name = str(active_df.loc[x, "name"])
+        if name[-1] == ".":
+            name = name[:len(name) - 1]
+
+        category = str(active_df.loc[x, "category"])
+
         net = active_df.loc[x, "effect"]
-        shared = active_df.loc[x, "category"] == "money_player"
+        shared = category == "money_player"
         move_to = ""
-        if "Advance to " in str(active_df.loc[x, "name"]):
-            statement = (active_df.loc[x, "name"])
-            if "nearest " in statement:
-                move_to = statement[len("Advance to nearest "):]
-            else:
-                move_to = statement[len("Advance to "):]
-            if move_to[-1] == ".":
-                move_to = move_to[:-1]
         set_status = ""
-
-        if "Jail" in str(active_df.loc[x, "name"]):
-            set_status = "in jail"
-            move_to = "Jail"
-        if "Get out of Jail Free" in str(active_df.loc[x, "name"]):
+        ownable = False
+        if "Get out of Jail Free" in name:
             set_status = "Active"
+            ownable = True
 
-        ownable = df.loc[x, "category"] == "item"
+        print(category)
+        if "move" in category:
+            net = 0
+            print("Its a move card")
+            if "rr" in category:
+                move_to = "Railroad"
+            elif "utility" in category:
+                move_to = "Utility"
+            elif "jail" in category:
+                move_to = "Jail"
+                set_status = "Jail"
+            elif "abs" in category:
+                move_to = -3
+            else:
+                board_spaces = pd.read_csv("data/board.csv")["Name"].to_list()
 
-        output.append(ActionType(net, shared, move_to, set_status, ownable))
+                splited = name.split(" ")
+                merged = ""
+                for x in reversed(range(len(splited))):
+                    selected = " ".join(splited[x:])
+
+                    for space in board_spaces:
+                        print(f"{space} is {selected} check...")
+                        if space == selected:
+                            move_to = space
+                            break
+                    if move_to != "":
+                        break
+
+        output.append(ActionType(name, net, shared, move_to, set_status, ownable))
     return output
 
 chances = init_list(df_chance)
 community = init_list(df_community)
 
-print(*chances)
+print("\n".join([x.full_info() for x in chances]))

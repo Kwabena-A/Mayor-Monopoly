@@ -12,17 +12,24 @@ players = [player1, player2]
 dice = Dice(2)
 
 from card import ActionType
-ActionCard("Test", ActionType(0, set_status="Get out of Jail Free", ownable=True)).land_on(player1)
+# ActionCard("Test", ActionType(0, set_status="Get out of Jail Free", ownable=True)).land_on(player1)
 
-ActionCard("Test", ActionType(0, set_status="Jail", move_to="Jail")).land_on(player1)
+# ActionCard("Test", ActionType(0, set_status="Jail", move_to="Jail")).land_on(player1)
 
-print(*board_spaces)
 def main():
     turn = 0
     while True:
         display_board(board_spaces, players)
         current_player = players[turn]
-        movement = int(input(f"Current Turn ({current_player.name}) ({current_player.status}): "))
+        while True:
+            try:
+                movement = int(input(f"Current Turn ({current_player.name}) ({current_player.status}): "))
+            except ValueError:
+                pass
+            else:
+                break
+
+
         matching = False
         if movement == -1: # Random Roll.
             movement, matching = dice.roll()

@@ -1,6 +1,6 @@
 id|tag|type|category|name|description|effect
 1|ADVGO|Chance|move|Advance to Go|Collect $200.|0
-2|ADVIA|Chance|move|Advance to Illinois Ave.|If you pass Go - collect $200.|24
+2|ADVIA|Chance|move|Advance to Illinois Avenue.|If you pass Go - collect $200.|24
 3|ADVSC|Chance|move|Advance to St. Charles Place|If you pass Go - collect $200.|11
 4|ADVNU|Chance|move_utility|Advance to nearest Utility|If Utility is unowned, you may buy it from the Bank. If owned, throw dice and pay owner a total ten times the amount thrown.|10
 5|ADVNR|Chance|move_rr|Advance to nearest Railroad|If Railroad is unowned, you may buy it from the Bank. If owned, pay owner twice the rental to which he/she is otherwise entitled. |2

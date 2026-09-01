@@ -13,21 +13,28 @@ class Player:
         self.status = "Active"
         self.jail_rolls = 0
 
-    def update_location(self, move: int = 0, skip_over = False, move_to: str = ""):
+    def update_location(self, move: int = 0, skip_over = False, move_to = ""):
+        if isinstance(move_to, int):
+            move = move_to
+            skip_over = True
+            move_to = ""
         if move_to != "":
             for space in self.board_spaces:
                 print(space.card.name, " ", move_to)
-                if move_to in space.card.name and "Go to " not in space.card.name :
+                if move_to in space.card.name and "Go to " not in space.card.name:
+                    print(space.location, " ", self.location)
                     if space.location > self.location:
                         move = space.location - self.location
                     else:
-                        move = (self.location
-                                + (len(self.board_spaces) - self.location)
+                        move = ((len(self.board_spaces) - self.location)
                                 + space.location)
+                    print(move)
                     break
 
         if skip_over:
-            self.location = move
+            self.location = (self.location + move)
+            if self.location >= len(self.board_spaces):
+                self.location -= len(self.board_spaces)
         else:
             # Pass Over
             if move > 0:
@@ -39,6 +46,8 @@ class Player:
                         self.location = 0
                     self.board_spaces[self.location].card.pass_on(self)
                 self.location += 1
+                if self.location >= len(self.board_spaces):
+                    self.location = 0
 
         # Update board
         for space in self.board_spaces:
@@ -49,6 +58,7 @@ class Player:
                 if self in space.currentlyOn:
                     space.currentlyOn.remove(self)
 
+        print(self.location)
         self.board_spaces[self.location].card.land_on(self)
 
     def update_money(self, amount: int):

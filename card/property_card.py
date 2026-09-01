@@ -12,6 +12,7 @@ class PropertyCard(Card):
 
     def land_on(self, player):
         from player import Player
+        from .railroad_card import RailroadCard
 
         print(player.all_info())
 
@@ -25,6 +26,8 @@ class PropertyCard(Card):
                 self.ownership = player
                 player.ownership.append(self)
                 self.update_rent(player)
+                for railroad in [x for x in player.ownership if isinstance(x, RailroadCard)]:
+                    railroad.update_rent(player)
 
     def update_rent(self, player):
         if self.house_count > 0:
@@ -43,9 +46,6 @@ class PropertyCard(Card):
             return
 
         self.info["Rent"] = self.info[f"RentBuild{self.house_count}"]
-
-
-
 
     def upgrade_property(self) -> bool:
         if self.house_count < 5:

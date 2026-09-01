@@ -1,5 +1,6 @@
 class ActionType():
-    def __init__(self, net = 0, shared = False, move_to = "", set_status = None, ownable = False):
+    def __init__(self, name: str, net = 0, shared = False, move_to = "", set_status = None, ownable = False):
+        self.name = name
         self.net = net
         self.shared = shared
         self.move_to = move_to
@@ -32,7 +33,7 @@ class ActionType():
             player.ownership.append(self)
             self.owned = True
 
-        if self.move_to != "":
+        if self.move_to != "" and not isinstance(self.move_to, int):
             if "Jail" in self.move_to:
                 player.update_location(move_to=self.move_to, skip_over=True)
             else:
@@ -52,14 +53,15 @@ class ActionType():
 
     def full_info(self) -> str:
         return f"""
-                | Net: {self.net}
-                | Shared: {self.shared}
-                | Move To: {self.move_to}
-                | Status: {self.set_status}
+                {self.name}
+                + Net: {self.net}
+                + Shared: {self.shared}
+                + Move To: {self.move_to}
+                + Status: {self.set_status}
                 """
 
     def __str__(self):
-        return self.set_status
+        return str(self.name)
 
 
 
