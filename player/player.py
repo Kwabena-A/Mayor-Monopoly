@@ -34,7 +34,7 @@ class Player:
         if skip_over:
             self.location = (self.location + move)
             if self.location >= len(self.board_spaces):
-                self.location -= len(self.board_spaces)
+                self.location % len(self.board_spaces)
         else:
             # Pass Over
             if move > 0:
@@ -81,10 +81,13 @@ class Player:
             for owned_property in self.ownership: # Count owned same colors
                 if isinstance(owned_property, card.PropertyCard) and owned_property.info["Color"] == property.info["Color"]:
                     owned_color_count += 1
-            if owned_color_count == count_color(property.info["Color"]): # Confirm full
+            exising_color_count = count_color(property.info["Color"])
+            if owned_color_count == exising_color_count: # Confirm full
                 if self.money > property.info["PriceBuild"]:
                     self.update_money(property.info["PriceBuild"] * -1)
                     isUpgraded = property.upgrade_property()
+            else:
+                print(f"Color set not owned: {owned_color_count}/{exising_color_count}")
 
         if isUpgraded:
             print(f"{self.name} upgraded {property}")
