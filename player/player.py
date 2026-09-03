@@ -112,6 +112,67 @@ class Player:
         self.status = "Active"
         self.jail_rolls = 0
 
+    def offer_trade(self, other_player):
+        assert isinstance(other_player, Player), "Passed Non-Player"
+        other_player: Player
+
+        print(f"  {self.name:^50}{other_player.name:^50}")
+
+        for x in range(max(len(self.ownership), len(other_player.ownership))):
+            home_row = str(self.ownership[x]) if len(self.ownership) > x else "-"
+            away_row = str(other_player.ownership[x]) if len(other_player.ownership) > x else "-"
+            print(f"{x}. {home_row:^50}{away_row:^50}")
+
+        print(f"{str(self.money):^50}{str(other_player.money):^50}")
+
+        print("Trade Format: 1 3 $800 for 6 8 9")
+        offer = input("Trade: ")
+        other_player.recieve_trade(self, offer)
+
+    def recieve_trade(self, other_player, offer):
+        assert isinstance(other_player, Player)
+        response = input(f"{self.name}... accept trade? (y/n): ").lower() == "y"
+        if response:
+            offer = offer.split(" ")
+            other_player_offer = offer[:offer.index("for")]
+            self_offer = offer[offer.index("for") + 1:]
+            print(other_player_offer)
+            print(self_offer)
+
+            for x in other_player_offer:
+                if "$" in x:
+                    price = int(x[1:])
+                    other_player.update_money(price * -1)
+                    self.update_money(price)
+                    other_player_offer.remove(x)
+
+
+            for x in self_offer:
+                if "$" in x:
+                    price = int(x[1:])
+                    self.update_money(price * -1)
+                    other_player.update_money(price)
+                    self_offer.remove(x)
+
+            other_player_offer = [other_player.ownership[x] for x in [int(y) for y in other_player_offer]]
+            self_offer = [self.ownership[x] for x in [int(y) for y in self_offer]]
+
+            print(*[x.name for x in other_player_offer])
+            print(*[x.name for x in self_offer])
+
+            self.ownership = [x for x in self.ownership if x not in self_offer]
+            other_player.ownership = [x for x in other_player.ownership if x not in other_player_offer]
+
+            self.ownership += other_player_offer
+            other_player_offer += self_offer
+
+            print("Trade Successful!")
+
+
+
+
+
+
     def __str__(self):
         return self.name
 

@@ -55,7 +55,11 @@ def main():
             turn = turn + 1 if turn + 1 < len(players) else 0
 
         display_board(board_spaces, players)
-        print("""1. Upgrade Property\t2. Downgrade Property\n3. Use Card\t\t\t4. View Properties\n5. End Turn""")
+
+        print("""
+1. Upgrade Property\t2. Downgrade Property
+3. Use Card\t\t\t4. View Properties
+5. Offer Trade\t\t6. End Turn""")
 
         while True:  # Player Custom movement option
             try:
@@ -86,15 +90,26 @@ def main():
 
                 elif decision == 4:
                     print(current_player.all_info())
-
                 elif decision == 5:
+                    other_players = [f"{x}. {players[x]}\t" for x in range(len(players))]
+                    print(*other_players)
+                    try:
+                        other_player = players[int(input("Select a property (Non-int to exit): "))]
+                        assert other_player != current_player
+                    except ValueError or IndexError or AssertionError:
+                        print("Invalid Player")
+                        continue
+                    print()
+                    current_player.offer_trade(other_player)
+
+                elif decision == 6:
                     break
             except ValueError:
                 pass
 
 
 
-        sleep(1.5)
+        sleep(0.5)
 
 if __name__ == "__main__":
     main()

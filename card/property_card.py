@@ -14,10 +14,13 @@ class PropertyCard(Card):
         from player import Player
         from .railroad_card import RailroadCard
 
+        assert isinstance(player, Player)
+
         print(player.all_info())
 
         if self.ownership:
-            player.update_money(self.info["Rent"] * -1)
+            if self not in player.ownership:
+                player.update_money(self.info["Rent"] * -1)
         else:
             purchase_decision = input(f"{player}... Buy {self.name} for {self.info["Price"]}? (Y/N): ")
             if purchase_decision.lower() == "y":
