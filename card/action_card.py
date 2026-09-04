@@ -11,7 +11,7 @@ class ActionCard(Card):
         self.isPassOnAction = isPassOnAction
 
 
-    def land_on(self, player): # Dosent account for own player yet.
+    def land_on(self, player, roll): # Dosent account for own player yet.
         from player import Player
         assert isinstance(player, Player)
 

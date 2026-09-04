@@ -5,6 +5,7 @@ from utils import display_board
 from time import sleep
 from dice import Dice
 
+
 player1 = Player("KB", board_spaces)
 player2 = Player("Major", board_spaces)
 

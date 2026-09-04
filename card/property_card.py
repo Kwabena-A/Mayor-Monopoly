@@ -10,7 +10,7 @@ class PropertyCard(Card):
         self.house_count = 0
 
 
-    def land_on(self, player):
+    def land_on(self, player, roll):
         from player import Player
         from .railroad_card import RailroadCard
 
@@ -41,7 +41,7 @@ class PropertyCard(Card):
 
         owned_color_count = 0
         for property in [x for x in player.ownership if isinstance(x, PropertyCard)]:
-            if property.info["Color"] == self.info["Color"]:
+            if property.info["Color"] == self.info["Color"] and property.house_count != -1:
                 owned_color_count += 1
 
         if owned_color_count == count_color(self.info["Color"]):
@@ -57,6 +57,8 @@ class PropertyCard(Card):
             self.house_count += 1
             self.info["Rent"] = self.info[f"RentBuild{self.house_count}"]
             return True
+
+
         return False
 
     def downgrade_property(self) -> bool:
@@ -66,8 +68,15 @@ class PropertyCard(Card):
             self.house_count -= 1
             self.info["Rent"] = self.info[f"RentBuild{self.house_count}"]
             return True
+
+        elif self.house_count == 0:
+            print(f"{self.name} (house count): {self.house_count} -> -1 (Mortgaged)")
+            self.house_count -= 1
+            self.info["Rent"] = 0
+            return True
+
         return False
 
     def __str__(self):
-        return f"{self.name} [{self.info["Color"]}] [{self.info["Rent"]}]"
+        return f"{self.name} [{self.info["Color"]}] [{self.info["Rent"]}] [{self.house_count}]"
 

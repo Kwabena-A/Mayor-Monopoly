@@ -3,25 +3,33 @@ from utils import count_color
 from .property_card import PropertyCard
 
 
-class RailroadCard(PropertyCard):
+class UtilityCard(PropertyCard):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.symbol = "R"
+        self.symbol = "U"
+        self.util_multi = False
 
 
-    def update_rent(self, player):
+    def land_on(self, player, roll):
+        self.update_rent(player)
+        if self.util_multi:
+            self.info["Rent"] = roll * 10
+        else:
+            self.info["Rent"] = roll * 4
+
+        super().land_on(player, roll)
+
+    def update_rent(self, _):
         from player import Player
 
-        assert isinstance(player, Player), "Non-player passed"
-        assert self in player.ownership, "Assinged in correct player"
+        if self.ownership:
+            util_count = 0
+            for property in self.ownership.ownership:
+                property: Card
+                if isinstance(property, UtilityCard):
+                    util_count += 1
 
-        rent = 25
-        for property in player.ownership:
-            property: Card
-            if isinstance(property, RailroadCard):
-                rent *= 2
-
-        self.info["Rent"] = rent
+            self.util_multi = util_count == 2
 
     def upgrade_property(self) -> bool:
         if self.house_count == -1:

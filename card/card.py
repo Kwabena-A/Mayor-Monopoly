@@ -8,7 +8,7 @@ class Card(ABC):
         self.ownership = None
 
     @abstractmethod
-    def land_on(self, player: Player):
+    def land_on(self, player: Player, roll: int):
         pass
 
     def pass_on(self, player: Player):

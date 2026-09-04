@@ -18,6 +18,7 @@ class Player:
             move = move_to
             skip_over = True
             move_to = ""
+
         if move_to != "":
             for space in self.board_spaces:
                 print(space.card.name, " ", move_to)
@@ -33,8 +34,8 @@ class Player:
 
         if skip_over:
             self.location = (self.location + move)
-            if self.location >= len(self.board_spaces):
-                self.location % len(self.board_spaces)
+            if self.location > len(self.board_spaces):
+                self.location = self.location % len(self.board_spaces)
         else:
             # Pass Over
             if move > 0:
@@ -59,7 +60,7 @@ class Player:
                     space.currentlyOn.remove(self)
 
         print(self.location)
-        self.board_spaces[self.location].card.land_on(self)
+        self.board_spaces[self.location].card.land_on(self, move)
 
     def update_money(self, amount: int):
         print(f'{self.money} -> {self.money + amount}')
@@ -77,17 +78,29 @@ class Player:
         assert isinstance(property, card.PropertyCard), "Passed non-property"
         isUpgraded = False
         if property.ownership == self: # Confirm Ownership
-            owned_color_count = 0
-            for owned_property in self.ownership: # Count owned same colors
-                if isinstance(owned_property, card.PropertyCard) and owned_property.info["Color"] == property.info["Color"]:
-                    owned_color_count += 1
-            exising_color_count = count_color(property.info["Color"])
-            if owned_color_count == exising_color_count: # Confirm full
-                if self.money > property.info["PriceBuild"]:
-                    self.update_money(property.info["PriceBuild"] * -1)
-                    isUpgraded = property.upgrade_property()
+            if property.house_count == -1: # Unmortgaged
+                unmortgaged_cost = property.info["Price"] + 10
+                if self.money > unmortgaged_cost:
+                    if property.upgrade_property():
+                        self.update_money(unmortgaged_cost * -1)
+                        isUpgraded = True
+
+
             else:
-                print(f"Color set not owned: {owned_color_count}/{exising_color_count}")
+                owned_color_count = 0
+                for owned_property in self.ownership: # Count owned same colors
+                    if isinstance(owned_property, card.PropertyCard) and owned_property.info["Color"] == property.info["Color"]:
+                        if owned_property.house_count == -1:
+                            print("You have un-delt with mortgages")
+                            break
+                        owned_color_count += 1
+                exising_color_count = count_color(property.info["Color"])
+                if owned_color_count == exising_color_count: # Confirm full
+                    if self.money > property.info["PriceBuild"]:
+                        self.update_money(property.info["PriceBuild"] * -1)
+                        isUpgraded = property.upgrade_property()
+                else:
+                    print(f"Color set not owned: {owned_color_count}/{exising_color_count}")
 
         if isUpgraded:
             print(f"{self.name} upgraded {property}")
@@ -98,9 +111,21 @@ class Player:
         assert isinstance(property, card.PropertyCard), "Passed non-property"
         isDowngraded = False
         if property.ownership == self: # Confirm Ownership
-            if property.downgrade_property():
-                self.update_money(property.info["PriceBuild"]) # Return Money
-                isDowngraded = True
+            if property.house_count > 0:
+                if property.downgrade_property():
+                    self.update_money(property.info["PriceBuild"] * -1) # Return Money
+                    isDowngraded = True
+            elif property.house_count == 0:
+                houses_on_color_set = False
+                for owned_property in self.ownership: # Check for colorset houses
+                    if isinstance(owned_property, card.PropertyCard) and owned_property.info["Color"] == property.info["Color"]:
+                        if owned_property.house_count != 0:
+                            print("You have un-delt with houses on same colors")
+                            houses_on_color_set = True
+
+                if not houses_on_color_set and property.downgrade_property():
+                    self.update_money((property.info["Price"] / 2) * -1) # Return Money
+                    isDowngraded = True
 
         if isDowngraded:
             print(f"{self.name} downgraded {property}")
@@ -163,15 +188,21 @@ class Player:
             self.ownership = [x for x in self.ownership if x not in self_offer]
             other_player.ownership = [x for x in other_player.ownership if x not in other_player_offer]
 
+            print("Properties")
+
+            print(f"{other_player.name}: {other_player_offer}")
+            print(f"{self.name}: {self_offer}")
+
+            for property in other_player_offer:
+                property.ownership = self
+
+            for property in self_offer:
+                property.ownership = other_player
+
             self.ownership += other_player_offer
-            other_player_offer += self_offer
+            other_player.ownership += self_offer
 
             print("Trade Successful!")
-
-
-
-
-
 
     def __str__(self):
         return self.name

@@ -1,5 +1,6 @@
 import pandas as pd
 from card import PropertyCard, ActionCard, Space, ActionType, RailroadCard
+from card.utility_card import UtilityCard
 from .init_action_cards import chances, community
 
 if __name__ == '__main__':
@@ -14,6 +15,8 @@ for x in range(df.shape[0]):
         card = PropertyCard(**(df.loc[x].to_dict()))
     elif df.loc[x, 'Space'] == "Railroad":
         card = RailroadCard(**(df.loc[x].to_dict()))
+    elif df.loc[x, 'Space'] == "Utility":
+        card = UtilityCard(**(df.loc[x].to_dict()))
     elif df.loc[x, 'Space'] == "Go":
         card = ActionCard(df.loc[x, "Name"], ActionType(str(df.loc[x, "Name"]), 200), isPassOnAction=True)
     elif df.loc[x, 'Space'] == "GoToJail":
